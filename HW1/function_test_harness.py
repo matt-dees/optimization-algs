@@ -1,6 +1,8 @@
 import time
 import collections
 
+RunReport = collections.namedtuple("RunReport", "status time num_function_calls x_min y_min")
+
 
 class TestHarness:
 
@@ -10,8 +12,6 @@ class TestHarness:
     def __init__(self):
         self._optimizer = None
         self._test_function = None
-
-    RunReport = collections.namedtuple("RunReport", "status time num_function_calls x_min y_min")
 
     class RunFailed(Exception):
 
@@ -50,7 +50,9 @@ class TestHarness:
             opt_output = self._optimizer.optimize(self._test_function, *args)
         except Exception as e:
             print(e)
-            return TestHarness.RunReport(1, 0, 0, 0, 0)
+            return RunReport(1, 0, 0, 0, 0)
 
         elapsed_time = time.time() - start
-        return TestHarness.RunReport(0, elapsed_time, opt_output.num_function_calls, opt_output.x, opt_output.f_x)
+        # Seconds to milliseconds
+        elapsed_time *= 1000
+        return RunReport(0, elapsed_time, opt_output.num_function_calls, opt_output.x, opt_output.f_x)

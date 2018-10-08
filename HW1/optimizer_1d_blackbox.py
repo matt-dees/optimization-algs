@@ -1,7 +1,6 @@
 import collections
 import time
 import math
-from function_test_harness import TestHarness
 
 
 class Optimizer1D:
@@ -164,12 +163,3 @@ class Optimizer1D:
         :return: OptOutput
         """
         return self._optimizing_function(self, func, *args)
-
-
-if __name__ == "__main__":
-    
-    test_harness = TestHarness()
-    test_harness.load_optimizer(Optimizer1D(Optimizer1D.golden_section))
-    test_harness.load_test_function(lambda x: (x - 2) ** 2)
-    report_list = test_harness.test_optimizer([-1000000, 2, 3], [1, 1, 10])
-    print(report_list)
