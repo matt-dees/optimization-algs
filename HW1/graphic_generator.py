@@ -2,6 +2,7 @@ from texttable import Texttable
 import matplotlib.pyplot as plt
 from stats_generator import StatsGenerator
 
+
 class GraphicGenerator:
     NUM_FUNC_EVALS_STRING = "Number of function evaluations"
     TIME_ELAPSED_STRING = "Time elapsed (ms)"
@@ -30,7 +31,9 @@ class GraphicGenerator:
         plt.figure(function_name + " " + graph_name)
         plt.title(function_name)
         plt.ylabel(graph_name)
+        plt.xlabel("")
         plt.boxplot(data)
+        plt.savefig("boxplots/" + function_name + "_" + graph_name + ".png")
 
     @classmethod
     def generate_box_plots(cls, function_under_test, run_report_list):
@@ -41,4 +44,3 @@ class GraphicGenerator:
         cls.construct_box_plot(cls.NUM_FUNC_EVALS_STRING, function_under_test.func_name, num_function_evals_data)
         cls.construct_box_plot(cls.TIME_ELAPSED_STRING, function_under_test.func_name, time_elapsed_ms_data)
         cls.construct_box_plot(cls.RELATIVE_DISTANCE_STRING, function_under_test.func_name, optimum_distance_data)
-        plt.show()

@@ -1,7 +1,7 @@
 import collections
 import time
 import math
-
+from utilies import FuncCallCounter
 
 def optimizer1D(func, initial_point, initial_step_size):
     """
@@ -11,7 +11,7 @@ def optimizer1D(func, initial_point, initial_step_size):
     :param initial_step_size: starting step size for the optimizer.
     :return: point (X) that minimizes the output of the function.
     """
-    return Optimizer1D(Optimizer1D.golden_section).optimize(func, initial_point, initial_step_size)
+    return Optimizer1D.golden_section(func, initial_point, initial_step_size).minimizing_input
 
 
 class Optimizer1D:
@@ -27,10 +27,6 @@ class Optimizer1D:
 
     # Used to represent three point interval
     OptOutput = collections.namedtuple("OptOutput", "minimizing_input minimized_output num_function_calls")
-
-    def __init__(self, func):
-        self._num_function_calls = 0
-        self._optimizing_function = func
 
     class TimeExpired(Exception):
         pass
@@ -68,17 +64,7 @@ class Optimizer1D:
         """
         return time_elapsed >= expiration_time
 
-    def _evaluate_function(self, func, *args, **kwargs):
-        """
-        Calls function and increase increment.
-        :param func: Function to eval.
-        :param args: Args to pass to function.
-        :param kwargs: Keyword arguments to pass to function.
-        :return: Function evaluation.
-        """
-        self._num_function_calls += 1
-        return func(*args, **kwargs)
-
+    @classmethod
     def golden_section(self, func, start, step_size, time_constraint=5):
         """
         Finds the optimum (x, y) for function <func> given the following parameters. Uses an expansion factor
@@ -89,22 +75,21 @@ class Optimizer1D:
         :param time_constraint: amount of time for optimization to complete
         :return: OptOutput
         """
-        # Reset function call counter
-        self._num_function_calls = 0
+        func = FuncCallCounter(func)
 
         # Save start time for run time constraint
         time_start = time.time()
 
         # Calculate first point in the interval
         x_1 = start
-        f_1 = self._evaluate_function(func, x_1)
+        f_1 = func(x_1)
 
         # Save step size as s
         s = step_size
 
         # Determine second point and calculate function output
         x_2 = x_1 + s
-        f_2 = self._evaluate_function(func, x_2)
+        f_2 = func(x_2)
 
         # Set old function descent value to None (populated on second iteration)
         f_descent_old = None
@@ -126,7 +111,7 @@ class Optimizer1D:
 
             # Calculate x and y value for last interval point
             x_4 = x_2 + s
-            f_4 = self._evaluate_function(func, x_4)
+            f_4 = func(x_4)
 
             # If the output of the last interval point is greater than our "middle" point, we have found a
             # 3 point pattern.
@@ -145,7 +130,7 @@ class Optimizer1D:
 
             # Calculate where the next point should be. Want to maintain a ratio of 1 - tau : tau.
             x_3 = Optimizer1D.TAU * x_4 + (1 - Optimizer1D.TAU) * x_1
-            f_3 = self._evaluate_function(func, x_3)
+            f_3 = func(x_3)
 
             # Calculate current function descent value that will be used in stopping criteria.
             f_descent_curr = Optimizer1D._descent_function(f_1, f_2, f_3)
@@ -155,7 +140,7 @@ class Optimizer1D:
                                                            Optimizer1D.EPSILON_ABSOLUTE) or
                 Optimizer1D.should_stop(f_descent_curr - f_descent_old, f_2, Optimizer1D.EPSILON_RELATIVE,
                                          Optimizer1D.EPSILON_ABSOLUTE)):
-                return Optimizer1D.OptOutput(x_2, f_2, self._num_function_calls)
+                return Optimizer1D.OptOutput(x_2, f_2, func.get_num_calls())
 
             # If f_2 < f_3 go to the left, otherwise go to the right.
             if f_2 < f_3:
@@ -165,15 +150,6 @@ class Optimizer1D:
 
             # Save old function descent output.
             f_descent_old = f_descent_curr
-
-    def optimize(self, func, *args):
-        """
-        This function should be used to find the optimal values for function <func>
-        :param func: Function to find optimal values for.
-        :param args: Arguments to pass to the function.
-        :return: OptOutput
-        """
-        return self._optimizing_function(self, func, *args)
 
 
 if __name__ == '__main__':

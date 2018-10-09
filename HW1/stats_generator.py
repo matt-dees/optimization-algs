@@ -1,13 +1,19 @@
-from collections import namedtuple
+from collections import namedtuple, Iterable
+import math
 
 Stats = namedtuple("Stats", "function_evals time_elapsed relative_distance")
 
 
 class StatsGenerator:
 
+    @classmethod
+    def euclidean_distance(cls, p1, p2):
+        return math.sqrt(sum([(p1_ele - p2_ele) ** 2 for (p1_ele, p2_ele) in zip(p1, p2)]))
 
     @classmethod
     def relative_distance(cls, x_optimum, x_code):
+        if isinstance(x_optimum, Iterable) and isinstance(x_code, Iterable):
+            return cls.euclidean_distance(x_optimum, x_code)
         return 100 * (abs(x_code - x_optimum) / (abs(x_optimum)))
 
     @classmethod
@@ -21,9 +27,9 @@ class StatsGenerator:
         if len(data) <= 1:
             return 0
         avg_val = cls.unbiased_expected_value(data)
-        variance_list = map(lambda x : (x - avg_val) ** 2, data)
+        variance_list = list(map(lambda x : (x - avg_val) ** 2, data))
         bessel_correction = 1 / (len(data) - 1)
-        return bessel_correction * sum(variance_list)
+        return math.sqrt(bessel_correction * sum(variance_list))
 
     @classmethod
     def generate_stats(cls, run_report_list, optimum):
