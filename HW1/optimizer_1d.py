@@ -3,6 +3,17 @@ import time
 import math
 
 
+def optimizer1D(func, initial_point, initial_step_size):
+    """
+    optimizer1D - global function using prototype defined in Homework1 PDF.
+    :param func: function to be optimized
+    :param initial_point: starting point for the optimizer
+    :param initial_step_size: starting step size for the optimizer.
+    :return: point (X) that minimizes the output of the function.
+    """
+    return Optimizer1D(Optimizer1D.golden_section).optimize(func, initial_point, initial_step_size)
+
+
 class Optimizer1D:
     """
     Utility class used to optimize unconstrained 1D functions.
@@ -15,7 +26,7 @@ class Optimizer1D:
     EPSILON_RELATIVE = math.sqrt(EPSILON_MACHINE)
 
     # Used to represent three point interval
-    OptOutput = collections.namedtuple("OptOutput", "x f_x num_function_calls")
+    OptOutput = collections.namedtuple("OptOutput", "minimizing_input minimized_output num_function_calls")
 
     def __init__(self, func):
         self._num_function_calls = 0
@@ -25,7 +36,7 @@ class Optimizer1D:
         pass
 
     @classmethod
-    def _should_stop(cls, interval_delta, middle_point, epsilon_rel, epsilon_abs):
+    def should_stop(cls, interval_delta, middle_point, epsilon_rel, epsilon_abs):
         """
         Evaluate stopping criteria condition.
         :param interval_delta: Distance between first and last interval points
@@ -140,9 +151,9 @@ class Optimizer1D:
             f_descent_curr = Optimizer1D._descent_function(f_1, f_2, f_3)
 
             # Determine if the algorithm should stop.
-            if f_descent_old and (Optimizer1D._should_stop(x_1 - x_3, x_2, Optimizer1D.EPSILON_RELATIVE,
+            if f_descent_old and (Optimizer1D.should_stop(x_1 - x_3, x_2, Optimizer1D.EPSILON_RELATIVE,
                                                            Optimizer1D.EPSILON_ABSOLUTE) or
-                Optimizer1D._should_stop(f_descent_curr - f_descent_old, f_2, Optimizer1D.EPSILON_RELATIVE,
+                Optimizer1D.should_stop(f_descent_curr - f_descent_old, f_2, Optimizer1D.EPSILON_RELATIVE,
                                          Optimizer1D.EPSILON_ABSOLUTE)):
                 return Optimizer1D.OptOutput(x_2, f_2, self._num_function_calls)
 
@@ -163,3 +174,8 @@ class Optimizer1D:
         :return: OptOutput
         """
         return self._optimizing_function(self, func, *args)
+
+
+if __name__ == '__main__':
+    func = lambda x : (x-2) ** 2
+    print(optimizer1D(func, 1, -50))

@@ -1,14 +1,15 @@
 from function_test_harness import TestHarness
-from optimizer_1d_blackbox import Optimizer1D
-import random
+from optimizer_1d import Optimizer1D
 from stats_generator import StatsGenerator
+from graphic_generator import GraphicGenerator
+
+import random
 from collections import namedtuple
 import matplotlib.pyplot as plt
 
 FunctionUnderTest = namedtuple("FunctionUnderTest", "func func_name optimum")
-NUM_FUNC_EVALS_STRING = "Number of function evaluations"
-TIME_ELAPSED_STRING = "Time elapsed (ms)"
-RELATIVE_DISTANCE_STRING = "Relative Distance from Optimum (%)"
+
+NUM_RUNS = 1000
 
 if __name__ == "__main__":
 
@@ -21,26 +22,19 @@ if __name__ == "__main__":
     test_harness.load_optimizer(Optimizer1D(Optimizer1D.golden_section))
 
     # Random distribution of start parameter
-    start = random.sample(range(-10000, 10000), 1000)
+    start = [random.randint(-10000, 10000) for x in range(NUM_RUNS)]
 
-    # Step always equals 1 for the 1000 runs
-    step = [1] * len(start)
+    # Random distribution for the inital_step parameter
+    step = [1 for x in range(NUM_RUNS)]
 
     for func in funcs_to_test:
         test_harness.load_test_function(func.func)
         report = test_harness.test_optimizer(start, step)
-        stats.append(StatsGenerator.generate_stats(run_report_list=report, optimum=func.optimum, function_name=func.func_name))
+        stats.append(StatsGenerator.generate_stats(run_report_list=report, optimum=func.optimum))
         reports.append(report)
 
-    cell_text = []
-    for stat in stats:
-        cell_text.append(list(map(lambda mean_std_pair: "{0}±{1}".format(mean_std_pair[0], mean_std_pair[1]), stat)))
+    for i, func in enumerate(funcs_to_test):
+        GraphicGenerator.generate_box_plots(func, reports[i])
 
-
-    plt.figure("Statistics Table")
-    plt.table(colLabels=[NUM_FUNC_EVALS_STRING, TIME_ELAPSED_STRING, RELATIVE_DISTANCE_STRING],
-              rowLabels=list(map(lambda func:func.func_name, funcs_to_test)),
-              cellText=cell_text, loc='top')
-
-    plt.show()
+    GraphicGenerator.generate_stats_table(funcs_to_test, stats)
 

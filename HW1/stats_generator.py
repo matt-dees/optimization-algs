@@ -1,22 +1,14 @@
-import matplotlib.pyplot as plt
 from collections import namedtuple
 
 Stats = namedtuple("Stats", "function_evals time_elapsed relative_distance")
 
-class StatsGenerator:
 
+class StatsGenerator:
 
 
     @classmethod
     def relative_distance(cls, x_optimum, x_code):
         return 100 * (abs(x_code - x_optimum) / (abs(x_optimum)))
-
-    @classmethod
-    def construct_box_plot(cls, graph_name, function_name, data):
-        plt.figure(function_name + " " + graph_name)
-        plt.title(function_name)
-        plt.ylabel(graph_name)
-        plt.boxplot(data)
 
     @classmethod
     def unbiased_expected_value(cls, data):
@@ -34,7 +26,7 @@ class StatsGenerator:
         return bessel_correction * sum(variance_list)
 
     @classmethod
-    def generate_stats(cls, run_report_list, optimum, function_name):
+    def generate_stats(cls, run_report_list, optimum):
         num_function_evals_data = [report.num_function_calls for report in run_report_list]
         time_elapsed_ms_data = [report.time for report in run_report_list]
         optimum_distance_data = [StatsGenerator.relative_distance(optimum, report.x_min) for report in run_report_list]
