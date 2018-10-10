@@ -74,7 +74,7 @@ class Optimizer2D:
 
 
 if __name__ == "__main__":
-    func = lambda x, y : 5*math.pow(x - 2.5, 2) - 6*(x - 2.5)*(y - 20.5) + 5*math.pow(y - 20.5, 2)
+    func = lambda x, y : 3*(x-2)**2 - 7*(x - 2)*(y - 10) + 5*(y - 10)**2
     func2 = lambda x, y: abs(x + 2.0) + abs(y - 1.0)
     print(optimizer2D(func, (0, 0), (1,1)))
     print(optimizer2D(func2, (0,0), (1,1)))

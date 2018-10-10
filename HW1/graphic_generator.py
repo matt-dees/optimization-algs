@@ -1,6 +1,7 @@
 from texttable import Texttable
 import matplotlib.pyplot as plt
 from stats_generator import StatsGenerator
+from random import randint
 
 
 class GraphicGenerator:

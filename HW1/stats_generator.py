@@ -3,7 +3,6 @@ import math
 
 Stats = namedtuple("Stats", "function_evals time_elapsed relative_distance")
 
-
 class StatsGenerator:
 
     @classmethod
@@ -13,7 +12,7 @@ class StatsGenerator:
     @classmethod
     def relative_distance(cls, x_optimum, x_code):
         if isinstance(x_optimum, Iterable) and isinstance(x_code, Iterable):
-            return cls.euclidean_distance(x_optimum, x_code)
+            return cls.euclidean_distance(x_optimum, x_code) / math.sqrt(sum([x**2 for x in x_optimum]))
         return 100 * (abs(x_code - x_optimum) / (abs(x_optimum)))
 
     @classmethod
