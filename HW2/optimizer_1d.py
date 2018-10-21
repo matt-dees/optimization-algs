@@ -2,6 +2,7 @@ import collections
 import time
 import math
 from utilies import FuncCallCounter
+import numpy
 
 def optimizer1D(func, initial_point, initial_step_size):
     """
@@ -85,7 +86,7 @@ class Optimizer1D:
         f_1 = func(x_1)
 
         # Save step size as s
-        s = step_size
+        s = numpy.float64(step_size)
 
         # Determine second point and calculate function output
         x_2 = x_1 + s
@@ -140,7 +141,7 @@ class Optimizer1D:
                                                            Optimizer1D.EPSILON_ABSOLUTE) or
                 Optimizer1D.should_stop(f_descent_curr - f_descent_old, f_2, Optimizer1D.EPSILON_RELATIVE,
                                          Optimizer1D.EPSILON_ABSOLUTE)):
-                return Optimizer1D.OptOutput(x_2, f_2, func.get_num_calls())
+                return Optimizer1D.OptOutput(x_2 if x_2 > 0 else 0, f_2 if x_2 > 0 else func(0), func.get_num_calls())
 
             # If f_2 < f_3 go to the left, otherwise go to the right.
             if f_2 < f_3:
