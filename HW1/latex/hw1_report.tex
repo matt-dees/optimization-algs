@@ -31,7 +31,7 @@ OR
 $$ |\bar{f} - \bar{f}_{old} | \le \epsilon_{R} |f_{2}| + \epsilon_{abs} $$
 \flushleft
 Where $\bar{f}$ is the output of the descent function, $\epsilon_{R}$ is the relative machine error ($\sqrt{\epsilon_{m}}$), and $\epsilon_{abs}$ is the absolute error. I used $1.11 \times 10^{-16}$ for the machine error and $1.11 \times 10^{-14}$ for the absolute error.
-The following statistics were gathered from 1000 runs using a random \texttt{inital\_point} drawn from the range (-10000, 10000) using the Python \texttt{random.randint()} function. The \texttt{inital\_point} variable was held fixed at 1. The \texttt{random.randint()} function pulled numbers from an approximately uniform distribution over 1000 runs as shown below: \\
+The following statistics were gathered from 1000 runs using a random \texttt{inital\_point} drawn from the range (-10000, 10000) using the Python \texttt{random.randint()} function. The \texttt{inital\_step\_size} variable was held fixed at 1. The \texttt{random.randint()} function pulled numbers from an approximately uniform distribution over 1000 runs as shown below: \\
 \begin{figure}[h]
 
 	\centering
