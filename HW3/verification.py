@@ -2,6 +2,8 @@ from ortools.algorithms import pywrapknapsack_solver
 from test_functions import KnapsackProblem, GraphColoring
 from SA import simulated_annealing
 import time
+from nelder_mead import nelder_mead
+from scipy.optimize import fmin
 
 
 def knapsack_verification():
@@ -85,5 +87,16 @@ def graph_coloring_verification():
     graph_color.print_colors()
 
 
+def verify_nelder_mead():
+    test_func = lambda x: x[0] ** 2 + 2 * x[1] ** 2 + 2 * x[0] * x[1]
+    start = (100, 100)
+    scipy_val = fmin(test_func, start)
+    my_val = nelder_mead(test_func, start)
+    print("SCIPY: ", scipy_val)
+    print("MYVAL: ", my_val)
+    return abs(my_val[1] - scipy_val[1]) <= 1e-2
+
+
 if __name__ == "__main__":
-    graph_coloring_verification()
+    # graph_coloring_verification()
+    verify_nelder_mead()
