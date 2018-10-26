@@ -1,4 +1,5 @@
 import numpy as np
+import time
 
 EPSILON_ABSOLUTE = 1e-14
 EPSILON_RELATIVE = 1e-12
@@ -35,19 +36,25 @@ def scale(x, x_l, s=0.5):
     return x_l + s * (x - x_l)
 
 
-def nelder_mead(func, initial_point, c=1, step_reduction=0.9):
+def nelder_mead(func, initial_point, c=1, step_reduction=0.9, time_constraint=15):
     current_point = np.asarray(initial_point)
     x_f_min = current_point, func(current_point)
 
     iteration_count = 0
     simplex = create_simplex(current_point, func, c)
+    start = time.time()
 
     while True:
+        if time.time() - start >= time_constraint:
+            print("Warning: time expired.")
+            return x_f_min
         iteration_count += 1
         simplex.sort(key=lambda x_f_pair: x_f_pair[1])
         x_f_h = simplex[-1]
         x_f_s = simplex[-2]
         x_f_l = simplex[0]
+        if x_f_l[1] < x_f_min[1]:
+            x_f_min = x_f_l
         if stopping_criteria(x_f_h[1], x_f_l[1]):
             if iteration_count >= 1 and stopping_criteria(x_f_min[1], x_f_l[1]):
                 return x_f_min
@@ -93,5 +100,7 @@ def nelder_mead(func, initial_point, c=1, step_reduction=0.9):
 
 
 if __name__ == "__main__":
-    nm_test_function = lambda x: x[0] ** 2 + 2 * x[1] ** 2 + 2 * x[0] * x[1]
-    print(nelder_mead(nm_test_function, (0, 1)))
+    #nm_test_function = lambda x: x[0] + x[1]
+    nm_test_function_2 = lambda x: x[0] ** 2 + 2 * x[1] ** 2 + 2 * x[0] * x[1]
+    #print(nelder_mead(nm_test_function, (0, 1)))
+    print(nelder_mead(nm_test_function_2, (0, 1)))

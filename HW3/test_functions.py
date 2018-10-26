@@ -33,9 +33,8 @@ class KnapsackProblem:
 
 class GraphColoring:
 
-    def __init__(self, colors, num_nodes=5):
+    def __init__(self, colors):
         self._graph = nx.petersen_graph()
-        self._dimenions = num_nodes
         self._colors = colors
         self._color_map = { node : random.choice(self._colors) for node in self._graph.nodes }
 

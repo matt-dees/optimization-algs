@@ -77,9 +77,9 @@ def knapsack_verification():
 
 def graph_coloring_verification():
     NUM_COLORS = 3
-    NUM_NODES = 20
+    NUM_NODES = 10
     COLOR_SET = range(NUM_COLORS)
-    graph_color = GraphColoring(COLOR_SET, NUM_NODES)
+    graph_color = GraphColoring(COLOR_SET)
     start = time.time()
     colors, _ = simulated_annealing(graph_color.solve, [0] * NUM_NODES, [COLOR_SET for _ in range(NUM_NODES)], 25000, 0.1)
     print(time.time() - start)
@@ -98,5 +98,5 @@ def verify_nelder_mead():
 
 
 if __name__ == "__main__":
-    # graph_coloring_verification()
-    verify_nelder_mead()
+    graph_coloring_verification()
+    #verify_nelder_mead()

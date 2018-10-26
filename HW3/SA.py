@@ -2,7 +2,6 @@ import numpy as np
 import random
 import math
 import time
-import test_functions
 
 DEBUG = 1
 REAL_VALUE_MIN = -100
@@ -127,6 +126,6 @@ if __name__ == '__main__':
         else:
             return total_profit/x[-1]
     allowed = [[0,1] for i in range(len(items))] + [[]]
-    starting_temp = 10.0
+    starting_temp = 10
     ending_temp = 0.1
     print(simulated_annealing(testf, [0,0,0,0,0,0,1.5], allowed, starting_temp, ending_temp))
